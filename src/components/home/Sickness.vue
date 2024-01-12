@@ -3,7 +3,7 @@
         <el-card class="box-card">
             <template #header>
                 <div class="card-header">
-                    <el-button color="#13B9C9" @click="showAddDialog">添加分类</el-button>
+                    <el-button color="#13B9C9" @click="showAddDialog">添加疾病</el-button>
                 </div>
             </template>
             <el-table :data="sicknessList.data" border stripe style="width: 100%" show-overflow-tooltip :header-cell-style="{
@@ -16,8 +16,8 @@
                 <el-table-column prop="diagnose" label="诊断" min-width="180" />
                 <el-table-column label="分类操作" min-width="200">
                     <template #default="scope">
-                        <el-button color="#13B9C9" @click="showEditDialog(scope.row)">修改分类</el-button>
-                        <el-button color="#13B9C9" @click="delSickness(scope.row.did)">删除分类</el-button>
+                        <el-button color="#13B9C9" @click="showEditDialog(scope.row)">修改疾病</el-button>
+                        <el-button color="#13B9C9" @click="delSickness(scope.row.did)">删除疾病</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -61,12 +61,12 @@ import { ref, reactive, getCurrentInstance, onMounted } from 'vue';
 import { ElMessage, FormInstance, ElMessageBox } from 'element-plus'
 
 const { proxy }: any = getCurrentInstance()
-// 新闻分类列表表格数据
+// 疾病列表表格数据
 const sicknessList = reactive({ data: [] })
 const getClassifyList = async () => {
     const res = await proxy.$http.get(`/disease/list?pno=${currentPage.value}&count=${pageSize.value}`)
     if (res.code !== 200) {
-        return ElMessage.error('新闻分类列表获取失败')
+        return ElMessage.error('疾病列表获取失败')
     }
     sicknessList.data = res.data
     total.value = res.total
@@ -168,7 +168,7 @@ const handleClose = () => {
     getClassifyList()
 }
 
-// 删除新闻分类
+// 删除疾病
 const delSickness = (id) => {
     ElMessageBox.confirm(
         '确定要删除该药品吗？',
