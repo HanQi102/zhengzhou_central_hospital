@@ -11,3 +11,17 @@ body,
   min-width: 1200px;
   min-height: 600px;
 }
+
+.el-breadcrumb {
+  margin-bottom: 10px;
+}
+
+.el-card {
+  .el-button {
+    color: white;
+
+    &:hover {
+      color: white;
+    }
+  }
+}

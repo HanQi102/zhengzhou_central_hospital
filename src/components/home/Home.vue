@@ -27,7 +27,7 @@
                     <el-menu active-text-color="#409EFF" background-color="#056F89" class="el-menu-vertical-demo" router
                         :collapse="isCollapse" :collapse-transition="false" unique-opened default-active="2"
                         text-color="#fff">
-                        <el-sub-menu :index="item.id.toString()" v-for="(item, index) in menuList" :key="item.id">
+                        <el-sub-menu :index="item.id.toString()" v-for="(item, index) in menuList.data" :key="item.id">
                             <template #title>
                                 <el-icon>
                                     <component :is="icons[index]" />
@@ -66,7 +66,7 @@ const router = useRouter()
 const { proxy }: any = getCurrentInstance();
 
 // menu菜单列表数据
-const menuList = ref([])
+const menuList = reactive({ data: [] })
 
 // 获取menu菜单列表数据
 const getMenuList = async () => {
@@ -74,8 +74,7 @@ const getMenuList = async () => {
     if (res.code !== 200) {
         return ElMessage.error(res.msg)
     }
-    menuList.value = res.data;
-    console.log(menuList.value)
+    menuList.data = res.data;
 }
 
 //侧边栏图标数组
