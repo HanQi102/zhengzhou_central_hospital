@@ -43,7 +43,7 @@
                     </el-menu>
                 </el-aside>
                 <el-main>
-                    <el-breadcrumb :separator-icon="ArrowRight">
+                    <el-breadcrumb :separator-icon="ArrowRight" v-if="$route.path != '/home/welcome'">
                         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
                         <el-breadcrumb-item>{{ breadcrumbList.itemAuthName }}</el-breadcrumb-item>
                         <el-breadcrumb-item>{{ breadcrumbList.itemChilAuthName }}</el-breadcrumb-item>
@@ -121,6 +121,7 @@ onMounted(() => {
     height: 100%;
     background-color: rgb(90, 204, 204);
 
+
     .el-container {
         height: 100%;
 
@@ -175,6 +176,14 @@ onMounted(() => {
             .el-menu {
                 border: none;
             }
+        }
+
+        // .el-mian {
+        //     --el-main-padding: 0 !important;
+        // }
+        .el-main {
+            background: url(../../assets/mainBj.cd9d9983.jpg);
+            background-size: cover;
         }
     }
 }

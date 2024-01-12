@@ -10,7 +10,13 @@ const router = createRouter({
             path: "/home",
             name: "home",
             component: () => import("../components/home/Home.vue"),
+            redirect: "/home/welcome",
             children: [
+                {
+                    path: 'welcome',
+                    name: 'welcome',
+                    component: () => import("../components/home/Welcome.vue")
+                },
                 {
                     path: 'users',
                     name: 'users',
