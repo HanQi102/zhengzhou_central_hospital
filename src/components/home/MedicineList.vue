@@ -15,13 +15,15 @@
                 <el-table-column prop="type" label="类型" />
                 <el-table-column prop="sale_price" label="原价" />
                 <el-table-column prop="market_price" label="活动价" />
-                <el-table-column prop="company" label="生产厂家" width="280" />
-                <el-table-column label="分类操作" min-width="220">
+                <el-table-column prop="company" label="生产厂家" width="260" />
+                <el-table-column label="分类操作" min-width="260">
                     <template #default="scope">
                         <el-button size="small" :icon="Edit" color="#13B9C9"
                             @click="showEditDialog(scope.row)">修改</el-button>
-                        <el-button size="small" :icon="Postcard" color="#13B9C9">详情</el-button>
-                        <el-button size="small" :icon="Delete" color="#13B9C9">删除</el-button>
+                        <el-button size="small" :icon="Postcard" color="#13B9C9" @click="showDialog(scope.row)"> 详情
+                        </el-button>
+                        <el-button size="small" :icon="Delete" color="#13B9C9"
+                            @click="delMedicine(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -33,7 +35,8 @@
             </template>
         </el-card>
         <!-- 添加修改对话框 -->
-        <el-dialog v-model="MedicineDialog" :title="MedicineDialogTitle" width="70%" @close="handleClose">
+        <el-dialog v-model="MedicineDialog" :title="MedicineDialogTitle" width="50%" @close="handleClose"
+            v-if="MedicineDialogTitle != '药品详情'">
             <el-form ref="MedicineRef" :model="MedicineMsg" :rules="MedicineRules" label-width="120px">
                 <el-form-item label="药品名称" prop="title">
                     <el-input v-model="MedicineMsg.title" />
@@ -91,12 +94,63 @@
                 </span>
             </template>
         </el-dialog>
+        <!-- 详情对话框 -->
+        <el-dialog v-model="MedicineDialog" :title="MedicineDialogTitle" width="50%" @close="handleClose" v-else>
+            <el-form ref="MedicineRef" :model="MedicineMsg" :rules="MedicineRules" label-width="120px">
+                <el-form-item label="药品名称" prop="title">
+                    <el-input v-model="MedicineMsg.title" disabled />
+                </el-form-item>
+                <el-form-item label="原价" prop="sale_price">
+                    <el-input v-model="MedicineMsg.sale_price" disabled />
+                </el-form-item>
+                <el-form-item label="活动价" prop="market_price">
+                    <el-input v-model="MedicineMsg.market_price" disabled />
+                </el-form-item>
+                <el-form-item label="类型" prop="type">
+                    <el-select v-model="MedicineMsg.type" placeholder="选择类型" disabled>
+                        <el-option value="中药" />
+                        <el-option value="西药" />
+                        <el-option value="中成药" />
+                        <el-option value="其他" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="规格" prop="unit">
+                    <el-select v-model="MedicineMsg.unit" placeholder="选择规格" disabled>
+                        <el-option value="盒" />
+                        <el-option value="片" />
+                        <el-option value="颗" />
+                        <el-option value="贴" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="图片" prop="pic">
+                    <el-input v-model="MedicineMsg.pic" disabled />
+                </el-form-item>
+                <el-form-item label="功能主治" prop="fun">
+                    <el-input v-model="MedicineMsg.fun" disabled />
+                </el-form-item>
+                <el-form-item label="不良反应" prop="bad">
+                    <el-input v-model="MedicineMsg.bad" disabled />
+                </el-form-item>
+                <el-form-item label="禁忌" prop="need">
+                    <el-input v-model="MedicineMsg.need" disabled />
+                </el-form-item>
+                <el-form-item label="生产企业" prop="company">
+                    <el-input v-model="MedicineMsg.company" disabled />
+                </el-form-item>
+                <el-form-item label="批准文号" prop="num">
+                    <el-input v-model="MedicineMsg.num" disabled />
+                </el-form-item>
+                <el-form-item label="详细介绍" prop="detail">
+                    <el-input v-model="MedicineMsg.detail" disabled />
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, getCurrentInstance } from 'vue';
-import { ElMessage, FormInstance } from 'element-plus'
+import { ElMessage, FormInstance, ElMessageBox } from 'element-plus'
 import { Edit, Postcard, Delete } from '@element-plus/icons-vue'
 
 const { proxy }: any = getCurrentInstance();
@@ -212,8 +266,39 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
 const handleClose = () => {
     MedicineDialog.value = false
+    Object.keys(MedicineMsg).forEach((key) => {
+        MedicineMsg[key] = ''
+    })
+    getMedicineList()
 }
 
+// 删除药品数据
+const delMedicine = (id) => {
+    ElMessageBox.confirm(
+        '确定要删除该药品吗？',
+        '提示',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        })
+        .then(async () => {
+            const res = await proxy.$http.delete(`/medicine?id=${id}`)
+            if (res.code !== 200) {
+                return ElMessage.error(res.msg)
+            }
+            ElMessage.success(res.msg)
+            getMedicineList()
+        })
+        .catch(() => { })
+}
+
+// 显示详情对话框
+const showDialog = (v) => {
+    MedicineDialogTitle.value = '药品详情'
+    MedicineMsg = v
+    MedicineDialog.value = true
+}
 
 onMounted(() => {
     getMedicineList()
