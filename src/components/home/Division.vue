@@ -3,7 +3,7 @@
         <el-card class="box-card">
             <template #header>
                 <div class="card-header">
-                    <el-button color="#13B9C9" @click="showAddDialog">添加疾病</el-button>
+                    <el-button color="#13B9C9" @click="showAddDialog">添加科室</el-button>
                 </div>
             </template>
             <el-table :data="divisionList.data" border stripe style="width: 100%" show-overflow-tooltip :header-cell-style="{
@@ -19,8 +19,8 @@
                 </el-table-column>
                 <el-table-column label="分类操作" min-width="200">
                     <template #default="scope">
-                        <el-button color="#13B9C9" @click="showEditDialog(scope.row)">修改疾病</el-button>
-                        <el-button color="#13B9C9" @click="delDivision(scope.row.id)">删除疾病</el-button>
+                        <el-button color="#13B9C9" @click="showEditDialog(scope.row)">修改科室</el-button>
+                        <el-button color="#13B9C9" @click="delDivision(scope.row.id)">删除科室</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -58,12 +58,12 @@ import { ref, reactive, getCurrentInstance, onMounted } from 'vue';
 import { ElMessage, FormInstance, ElMessageBox } from 'element-plus'
 
 const { proxy }: any = getCurrentInstance()
-// 疾病列表表格数据
+// 科室列表表格数据
 const divisionList = reactive({ data: [] })
 const getClassifyList = async () => {
     const res = await proxy.$http.get(`/office/list?pno=${currentPage.value}&count=${pageSize.value}`)
     if (res.code !== 200) {
-        return ElMessage.error('疾病列表获取失败')
+        return ElMessage.error('科室列表获取失败')
     }
     divisionList.data = res.data
     total.value = res.total
@@ -105,12 +105,12 @@ const divisionRules = reactive({
 })
 // 显示添加对话框
 const showAddDialog = () => {
-    divisionDialogTitle.value = '疾病添加'
+    divisionDialogTitle.value = '科室添加'
     divisionDialog.value = true
 }
 // 显示修改对话框
 const showEditDialog = (val) => {
-    divisionDialogTitle.value = '修改疾病'
+    divisionDialogTitle.value = '修改科室'
     divisionMsg = val
     divisionDialog.value = true
 }
@@ -139,10 +139,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            if (divisionDialogTitle.value == '疾病添加') {
+            if (divisionDialogTitle.value == '科室添加') {
                 addDialog()
             }
-            if (divisionDialogTitle.value == '修改疾病') {
+            if (divisionDialogTitle.value == '修改科室') {
                 editDialog()
             }
         } else {
@@ -159,7 +159,7 @@ const handleClose = () => {
     getClassifyList()
 }
 
-// 删除疾病
+// 删除科室
 const delDivision = (id) => {
     ElMessageBox.confirm(
         '确定要删除该药品吗？',
