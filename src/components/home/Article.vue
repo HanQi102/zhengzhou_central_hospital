@@ -7,7 +7,7 @@
                 </div>
             </template>
             <!--  文章列表表格 -->
-            <el-table :data="medicineList.data" border stripe style="width: 100%" show-overflow-tooltip :header-cell-style="{
+            <el-table :data="articleList.data" border stripe style="width: 100%" show-overflow-tooltip :header-cell-style="{
                 backgroundColor: '#89DCE4',
                 color: '#333333'
             }">
@@ -112,7 +112,7 @@ import { ElMessage, FormInstance, ElMessageBox } from 'element-plus'
 const { proxy }: any = getCurrentInstance();
 
 // 文章列表数据
-const medicineList = reactive({ data: [] })
+const articleList = reactive({ data: [] })
 // 获取文章列表数据
 const getArticleList = async () => {
     const res = await proxy.$http.get(`/news/article/list?pno=${currentPage.value}&count=${pageSize.value}`)
@@ -120,7 +120,7 @@ const getArticleList = async () => {
     if (res.code !== 200) {
         return ElMessage.error(res.msg)
     }
-    medicineList.data = res.data
+    articleList.data = res.data
     total.value = res.total
 }
 // 分页器
